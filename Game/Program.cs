@@ -3,7 +3,7 @@
 namespace Game
 {
     // https://www.youtube.com/watch?v=tR30963rDig&ab_channel=%D0%94%D0%BC%D0%B8%D1%82%D1%80%D0%B8%D0%B9%D0%A1%D1%82%D0%BE%D0%BF%D0%BA%D0%B5%D0%B2%D0%B8%D1%87
-    // 10:56
+    // 18:59
     class Program
     {
         private const int ScreenWidth = 100;
@@ -79,18 +79,35 @@ namespace Game
                     switch (consoleKey)
                     {
                         case ConsoleKey.A:
-                            _playerA += elapsedTime;
+                            _playerA += elapsedTime * 2;
                             break;
                         case ConsoleKey.D:
-                            _playerA -= elapsedTime;
+                            _playerA -= elapsedTime * 2;
                             break;
                         case ConsoleKey.W:
                         {
                             _playerX += Math.Sin(_playerA) * 10 * elapsedTime;
                             _playerY += Math.Cos(_playerA) * 10 * elapsedTime;
+
+                            if (_map[(int) _playerY * MapWidth + (int) _playerX] == '#')
+                            {
+                                _playerX -= Math.Sin(_playerA) * 10 * elapsedTime;
+                                _playerY -= Math.Cos(_playerA) * 10 * elapsedTime;
+                            }
                             break;
                         }
-                            
+                        case ConsoleKey.S:
+                        {
+                            _playerX -= Math.Sin(_playerA) * 10 * elapsedTime;
+                            _playerY -= Math.Cos(_playerA) * 10 * elapsedTime;
+                            if (_map[(int)_playerY * MapWidth + (int)_playerX] == '#')
+                            {
+                                _playerX += Math.Sin(_playerA) * 10 * elapsedTime;
+                                _playerY += Math.Cos(_playerA) * 10 * elapsedTime;
+                            }
+                            break;
+                        }
+
                     }
                 }
 
@@ -165,7 +182,31 @@ namespace Game
                         }
                         else
                         {
-                            Screen[y * ScreenWidth + x] = '.';
+                            char floorShade;
+                            double b = 1 - (y - ScreenHeight / 2d) / (ScreenHeight / 2d);
+
+                            if (b < 0.25)
+                            {
+                                floorShade = '#';
+                            }
+                            else if (b < 0.5)
+                            {
+                                floorShade = 'x';
+                            }
+                            else if (b < 0.75)
+                            {
+                                floorShade = '-';
+                            }
+                            else if (b < 0.9)
+                            {
+                                floorShade = '.';
+                            }
+                            else
+                            {
+                                floorShade = ' ';
+                            }
+
+                            Screen[y * ScreenWidth + x] = floorShade;
                         }
                     }
                 }
